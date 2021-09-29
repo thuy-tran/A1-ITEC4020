@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>A1</title>
+</head>
+<body>
+	<div id='title'>
+        
+    </div>
+	<script type="text/javascript">
+
+        function extractID(title) {
+        var xhr;
+        xhr= new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var result = this.responseText;
+                alert ("Results are in! ");
+            }
+            else 
+                alert ('Error');
+        }
+        xhr.open("GET", "esearch.fcgi?db=pubmed&term=" + title, true);
+        xhr.send();
+    };
+
+		let xmlContent='';
+		let literatureTitle = document.getElementById('title');
+		fetch('4020a1-datasets.xml').then((response)=>{
+			response.text().then((xml)=>{
+                xmlContent = xml;
+				let parser = new DOMParser();
+                let xmlDOM = parser.parseFromString(xmlContent,'application/xml');
+                let titles = xmlDOM.querySelectorAll('Article');
+
+                titles.forEach(titleXmlNode =>{
+                    let row = document.createElement('div');
+                    row.innerText = 'Title: ' + titleXmlNode.children[1].innerHTML;
+                    //extractID(row.innerText);
+                    literatureTitle.appendChild(row);
+                });
+                
+			});
+		});
+	</script>
+</body>
+</html>
