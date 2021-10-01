@@ -5,12 +5,24 @@
 	<title>A1</title>
 </head>
 <body>
-	<div id='title'>
+    <div id='article'></div>
+	<div id='ArticleTitle'>
         
     </div>
+    <div id='LastName'>
+        
+    </div>
+    <div id='ForeName'>
+        
+    </div>
+
+    <div id='ISOAbbreviation'>
+        
+    </div>
+
 	<script type="text/javascript">
 
-        function extractID(title) {
+    function extractID(input) {
         var xhr;
         xhr= new XMLHttpRequest();
         xhr.onreadystatechange = function() {
@@ -21,28 +33,87 @@
             else 
                 alert ('Error');
         }
-        xhr.open("GET", "esearch.fcgi?db=pubmed&term=" + title, true);
+        xhr.open("GET", "esearch.fcgi?db=pubmed&term=" + input, true);
         xhr.send();
     };
 
-		let xmlContent='';
-		let literatureTitle = document.getElementById('title');
-		fetch('4020a1-datasets.xml').then((response)=>{
-			response.text().then((xml)=>{
-                xmlContent = xml;
-				let parser = new DOMParser();
-                let xmlDOM = parser.parseFromString(xmlContent,'application/xml');
-                let titles = xmlDOM.querySelectorAll('Article');
+    //function encoder(uri1,uri2,uri3) {
+        //try{
+            //var encoder = encodeURI(uri1)+encodeURI(uri2)+encodeURI(uri3);
+        //}
+        //finally{
+            //var encoder = encodeURI(uri1)+encodeURI(uri2)+encodeURI(uri3);
+        //}
+    
 
-                titles.forEach(titleXmlNode =>{
-                    let row = document.createElement('div');
-                    row.innerText = 'Title: ' + titleXmlNode.children[1].innerHTML;
-                    //extractID(row.innerText);
-                    literatureTitle.appendChild(row);
-                });
+    // function readXML(info) {
+    //     try{
+    //         let info = document.createElement('div');
+    //             info.setAttribute("id", info);
+    //             try{
+    //                 info.innerText = articleXmlNode.querySelector(info).innerHTML;
+    //             }
+    //             finally{
+    //                 info.innerText="";
+    //             }
                 
-			});
-		});
+    //             document.getElementById(info).appendChild(info);
+    //     }
+    //     finally{
+    //         document.getElementById(info).innerText="";
+    //     }
+    //     }
+
+    let xmlContent = '';
+        let literature = document.getElementById('article');
+        fetch('4020a1-datasets.xml').then((response)=> {
+            response.text().then((xml)=>{
+                xmlContent = xml;
+                let parser = new DOMParser();
+                let xmlDOM = parser.parseFromString(xmlContent, 'application/xml');
+                let articles = xmlDOM.querySelectorAll('Article');
+
+                articles.forEach(articleXmlNode => {
+                   
+                   let row1 = document.createElement('div');
+                    row1.setAttribute("id", "author");
+                    let Author= articleXmlNode.querySelector('LastName');
+                    try {
+                        if (Author==null) throw "";
+                        row1.innerText = Author.innerHTML;
+                    }
+                    catch(err) {
+                        row1.innerText = err;
+                        }
+                    literature.appendChild(row1);
+
+                    let row2= document.createElement('div');
+                    row2.setAttribute('id', 'title');
+                    let ArticleTitle = articleXmlNode.querySelector('ArticleTitle');
+                    try {
+                        if (ArticleTitle==null) throw "";
+                        row2.innerText = ArticleTitle.innerHTML;
+                    }
+                    catch(err) {
+                        row2.innerText = err;
+                        }
+                    literature.appendChild(row2);
+
+                    let row3= document.createElement('div');
+                    row3.setAttribute('id', 'ISOAbbreviation');
+                    let ISO = articleXmlNode.querySelector('ISOAbbreviation');
+                    try {
+                        if (ISO==null) throw "";
+                        row3.innerText = ISO.innerHTML;
+                    }
+                    catch(err) {
+                        row3.innerText = err;
+                        }
+                    literature.appendChild(row3);
+                    
+                }); 
+            }); 
+        }); 
 	</script>
 </body>
 </html>
